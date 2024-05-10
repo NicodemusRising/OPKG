@@ -1,0 +1,37 @@
+https://forum.openwrt.org/t/extroot-after-upgrade-to-latest-22-03-4/158883/8
+
+
+opkg update; opkg install block-mount kmod-usb-storage kmod-fs-ext4
+reboot
+
+
+
+From a completely default state, run the following:
+
+(install extroot dependencies)
+
+opkg update; opkg install block-mount kmod-usb-storage kmod-fs-ext4
+reboot
+Plug in your USB drive and make sure it shows up:
+
+block info
+If it does...
+delete everyhing on it.
+
+mount /dev/sda1 /mnt; rm -rf /mnt; umount /mnt
+(you may get an error that it can't delete /mnt but that's fine)
+
+Now pivot to extroot:
+
+mount /dev/sda1 /mnt ; tar -C /overlay -cvf - . | tar -C /mnt -xf - ; umount /mnt
+
+block detect > /etc/config/fstab; \
+   sed -i s/option$'\t'enabled$'\t'\'0\'/option$'\t'enabled$'\t'\'1\'/ /etc/config/fstab; \
+   sed -i s#/mnt/sda1#/overlay# /etc/config/fstab; \
+   cat /etc/config/fstab;
+   
+reboot
+When it comes back up, check to see if it has mounted as overlay...
+
+df -h
+Report back with the output if there are any errors or anything unexpected.
