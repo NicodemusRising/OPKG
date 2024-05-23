@@ -1,0 +1,10 @@
+tcpdump -i br-lan "host 192.168.1.3" -w /usb/packets.pcap
+
+tcpdump -i br-lan "host 192.168.1.134" -w /overlay/packets.pcap
+
+opkg install luci-app-sqm luci-proto-wireguard luci-app-wireguard collectd luci-app-statistics adblock luci-app-adblock tcpdump-mini curl ca-certificates iperf3 irqbalance htop luci-app-ksmbd ksmbd-utils ksmbd-avahi-service minidlna luci-app-minidlna
+
+tcpdump -i phy0-ap0 "host 192.168.1.134" -w /overlay/packets.pcap -v
+
+
+tcpdump -i br-lan port 80 -w /overlay/packets.pcap
