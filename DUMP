@@ -8,3 +8,33 @@ tcpdump -i phy0-ap0 "host 192.168.1.134" -w /overlay/packets.pcap -v
 
 
 tcpdump -i br-lan port 80 -w /overlay/packets.pcap
+
+
+# nvram
+usage: nvram [get name] [set name=value] [unset name] [show] [commit] ...
+#
+ nvram show | grep username
+size: 12006 bytes (20762 left)
+pptp_username=
+http_username=admin
+bpa_username=
+ddns_username=
+ver_check_ftp_username=anonymous
+pppoe_username=guest
+super_username=Gearguy
+#
+nvram show | grep passw
+size: 12006 bytes (20762 left)
+pptp_passwd=
+ver_check_ftp_password=WGR614V8@
+super_passwd=Geardog
+http_passwd=password
+bpa_passwd=
+pppoe_passwd=
+ddns_passwd=
+#
+ nvram set super_username=newusername
+nvram set super_passwd=newpasswd
+nvram commit
+#
+# reboot
