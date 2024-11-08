@@ -1,3 +1,79 @@
+
+On the Software page, click update, then install the packages below. These can alternatively be pasted into SSH with opkg install. Note: below uses ext4 filesystem, alternatively you can use any you prefer: kmod-fs-ext4, kmod-fs-btrfs, kmod-fs-exfat, ntfs-3g, etc.
+
+block-mount e2fsprogs kmod-usb-storage-uas kmod-usb3 luci-app-hd-idle kmod-fs-ext4
+
+2. Plug in your USB drive, it will be detected automatically as /dev/sdXX depending on the drive and partition numbers.
+
+3. Go to the System → Mount Points page and click on the drive to mount, click save & apply.
+
+4. Go to the Services → HDD Idle page and enable to idle the drive to save power and lifespan, click save & apply.
+
+You're done! The drive is ready to read/write data.
+
+Command Line
+1. Use a computer to format your USB drive using the default options. This prepares the drive for the process below, which will erase those settings. Warning: This initial formatting will erase the entire USB drive.
+
+2. SSH into your device and enter the following commands. More...
+
+3. Install the required packages. Note: below uses ext4 filesystem, alternatively you can use any you prefer (kmod-fs-ext4, kmod-fs-btrfs, kmod-fs-exfat, ntfs-3g, etc). More...
+
+opkg update && opkg install block-mount e2fsprogs kmod-usb-storage-uas kmod-usb3 kmod-fs-ext4
+4. Enter ls -al /dev/sd* to show the name of all attached USB devices. The list may be empty if there are no USB devices. More...
+
+5. Insert the USB drive into your router. Enter ls -al /dev/sd* again, and this time you should see a new /dev/sdXX device. sdXX is the device name of your new USB device. More...
+
+    root@OpenWrt:~# ls -al /dev/sd*
+    brw-------    1 root     root        8,   0 Feb  4 15:13 /dev/sda
+    brw-------    1 root     root        8,   1 Feb  4 14:06 /dev/sda1
+6. Make an ext4 filesystem on the USB device using the device name you just discovered. Note: Be certain you enter the proper device name - this step will completely erase the device. More...
+
+mkfs.ext4 /dev/sda1
+7. Create the fstab config file based on all the block devices found. More...
+
+block detect | uci import fstab
+8. Update the fstab config file to mount all drives at startup. More...
+
+uci set fstab.@mount[0].enabled='1' && uci set fstab.@global[0].anon_mount='1' && uci commit fstab
+9. Mount the device. More...
+
+/etc/init.d/fstab boot
+You're done! The drive is ready to read/write data.
+
+More Details
+More information on this procedure and USB drives:
+
+You can mount from the web interface, in the System → Mount Points menu.
+Samba can be used to share (read/write) the drive over your network.
+The full USB Drive tutorial has much more about USB drives.
+For NTFS disks, refer to Writable NTFS
+Look at the fstab documentation to configure from the command line
+This Forum thread has a lot of background information: https://forum.openwrt.org/t/more-on-usb-drive-installation/30695/2
+If you want to temporarily mount the drive (say, for testing), you can simply enter: mkdir /tmp/MyDrive; mount /dev/sda1 /tmp/MyDrive, after finishing the test reading/writing the drive: umount /tmp/MyDrive
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 https://forum.openwrt.org/t/extroot-after-upgrade-to-latest-22-03-4/158883/8
 
 
